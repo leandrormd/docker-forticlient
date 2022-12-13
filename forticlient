@@ -15,6 +15,11 @@ expect -exact "Would you like to connect to this server? (Y/N)" {
   send -- "Y\n"
 }
 
+# In case of token
+expect -exact "A FortiToken code is required for SSL-VPN login authentication." {
+  send -- "$env(VPNTOKEN)\n"
+}
+
 # Expect tunnel to actually start
 expect {
   "STATUS::Tunnel running" {
@@ -22,6 +27,20 @@ expect {
     send_user -- "Failed to bring tunnel up after $env(VPNTIMEOUT)s\n"
     exit 1
   }
+}
+
+expect {
+  "STATUS::Set up tunnel failed" {
+    send_user -- "Failed to bring tunnel"
+    exit 1
+  } 
+}
+
+expect {
+  "NOTICE::Insufficient credential(s). Please check the password, client certificate, etc." {
+    send_user -- "Failed to credential(s)"
+    exit 1
+  } 
 }
 
 # Expect tunnel to stop but not exit

@@ -14,14 +14,15 @@ All of the container traffic is routed through the VPN, so you can in turn route
 # Create a docker network, to be able to control addresses
 docker network create --subnet=172.20.0.0/16 fortinet
 
-# Start the priviledged docker container with a static ip
+# Start the priviledged docker container with a static ip, VPNTOKEN is optional
 docker run -it --rm \
   --privileged \
   --net fortinet --ip 172.20.0.2 \
   -e VPNADDR=host:port \
   -e VPNUSER=me@domain \
   -e VPNPASS=secret \
-  auchandirect/forticlient
+  -e VPNTOKEN=123
+  lmsistemas/forticlient
 
 # Add route for you remote subnet (ex. 10.201.0.0/16)
 ip route add 10.201.0.0/16 via 172.20.0.2
@@ -48,7 +49,7 @@ docker run -it --rm \
   -e VPNADDR=host:port \
   -e VPNUSER=me@domain \
   -e VPNPASS=secret \
-  auchandirect/forticlient
+  lmsistemas/forticlient
 
 # Add route for you remote subnet (ex. 10.201.0.0/16)
 sudo route add -net 10.201.0.0/16 $(docker-machine ip fortinet)
